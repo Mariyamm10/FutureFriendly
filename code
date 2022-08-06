@@ -1,0 +1,545 @@
+#include<iostream>
+#include<string>
+#include<fstream>
+using namespace std;
+class Text
+{
+	protected:
+		string a;
+	public:
+		virtual string encrypt(string)=0;
+		virtual string decrypt(string)=0;
+		void set_a(string a)
+		{
+			this->a=a;
+		}
+};
+
+class CeaserCipher:public Text
+{
+	public:
+	string encrypt(string text)
+	{
+		string output;
+		int i;
+		for(i=0;i<text.length();i++)
+		{
+		output +=text[i]+2;
+		}
+		return (output);
+	}
+	string decrypt(string text)
+	{
+		string output;
+		int i;
+		for(i=0;i<text.length();i++)
+		{
+			output +=text[i]-2;
+		}
+		return (output);
+		}	
+};
+
+class Vigenere:public Text
+    {
+    	public:
+    	 string encrypt(string text)
+        {
+        	string K;
+        	K="WAREESHA";
+            string out;
+ 
+            for (int i = 0, j = 0; i < text.length(); ++i)
+            {
+                char c = text[i];
+ 
+                if (c >= 'a' && c <= 'z')
+                    c += 'A' - 'a';
+                else if (c < 'A' || c > 'Z')
+                    continue;
+ 
+                out += (c + K[j] - 26) % 26 + 'A';
+                j = (j + 1) % K.length();
+            }
+ 
+            return out;
+        }
+ 
+        string decrypt(string text)
+        {
+        	string K;
+        	K="WAREESHA";
+        		
+            string out;
+            for (int i = 0, j = 0; i < text.length(); ++i)
+            {
+                char c = text[i];
+ 
+                if (c >= 'a' && c <= 'z')
+                    c += 'A' - 'a';
+                else if (c < 'A' || c > 'Z')
+                    continue;
+ 
+                out += (c - K[j] + 26) % 26 + 'A';
+                j = (j + 1) % K.length();
+            }
+ 
+            return out;
+        }
+	};
+
+class XOR:public Text
+{
+   public:                 
+	string encrypt(string text)
+{
+    char xorKey = 'P';
+    int len = text.length();
+    for (int i = 0; i < len; i++)
+    {
+        text[i] = text[i] ^ xorKey;
+    }
+    return text;
+}
+string decrypt(string text)
+{
+    
+    char xorKey = 'P';
+    int len = text.length();
+    for (int i = 0; i < len; i++)
+    {
+        text[i] = text[i] ^ xorKey;   
+    }
+    return text;
+}
+};
+
+int main()
+{
+	int choice,choi;
+	string a;
+	Text *txtptr;
+	CeaserCipher cc, ccc;
+	Vigenere vc ,vcc;
+	XOR xr,xrr;
+	cout<<"\t\t\t\t\t WELCOME TO ENCRYPTION SYSTEM"<<endl<<endl;
+	ofstream ES; 
+                ES.open("ES.txt",ios::app);  
+                if(!ES) 
+{
+cout<<"File creation failed";
+}
+else
+{
+cout<<"New file created";
+ES.close(); 
+}
+	A:
+	cout<<" >>MAIN MENU<<"<<endl;
+	cout<<"1.) Ceaser Cipher"<<endl;
+	cout<<"2.) Vigenere Cipher"<<endl;
+	cout<<"3.) XOR  "<<endl;
+	cout<<"4)  Search encryption from file"<<endl;
+	cout<<"5)  search decryption from file"<<endl<<endl;
+	cout<<"Please choose suitable choice:";
+	cin>>choice;
+	system("CLS");
+	switch(choice)
+	{
+		case 1:
+			{
+			txtptr=&cc;
+			D:
+			cout<<"***Welcome Ceaser Cipher***"	<<endl;
+			cout<<"Press 1 for Encryption"<<endl;
+			cout<<"Press 2 for Decryption"<<endl;
+			cout<<"press 3 for both"<<endl;
+			cin>>choi;
+			if(choi==1)
+			{
+				ofstream ES; 
+                ES.open("ES.txt",ios::out); 
+                ES<<"Encryption system of Cesar Cipher"<<endl;
+            
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				cc.set_a(a);
+				string encrypted = txtptr->encrypt(a);
+				cout<<"Encrypted Text="<<encrypted<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+                ES<<"String to be encrypted : "<<a<<endl;
+                ES<<"Encrypted string :- "<<encrypted<<endl;
+                ES.close();
+			}
+			else if(choi==2)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app);
+				ES<<"Encryption system of Cesar Cipher"<<endl; 
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				cc.set_a(a);
+				string decrypted = txtptr->decrypt(a);
+				cout<<"Decrypted Text="<<decrypted<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+				ES<<"String to be decrypted : "<<a<<endl;
+                ES<<"Decrypted  string :- "<<decrypted<<endl;
+                ES.close();	
+			}
+			else if(choi==3)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of Cesar Cipher"<<endl;
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				cc.set_a(a);
+				string encrypted = txtptr->encrypt(a);
+				cout<<"Encrypted Text="<<encrypted<<endl;
+				string decrypted = txtptr->decrypt(encrypted);
+				cout<<"Decrypted Text="<<decrypted<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+                ES<<"Decrypted string :- "<<decrypted<<endl;
+                ES<<"Encrypted string :- "<<encrypted<<endl;
+                ES.close();	
+				break;
+			}
+			
+			else
+			{
+				cout<<"OOPS TRY AGAIN"<<endl;
+				goto D;
+				}
+			break;
+			}
+			
+		case 2:
+		{
+			txtptr=&vc;
+	
+			C:
+			cout<<"***Welcome to Vigenere cipher***"<<endl;
+			cout<<"Press 1 for Encryption"<<endl;
+			cout<<"Press 2 for Decryption"<<endl;
+			cout<<"press 3 for both"<<endl;
+			cin>>choi;
+			if(choi==1)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of Vigenere cipher "<<endl;
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				vc.set_a(a);
+	            string encrypted = txtptr->encrypt(a);
+                string decrypted = txtptr->decrypt(encrypted);
+				cout<<"Encrypted Text="<<txtptr->encrypt(a)<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+				ES<<"String to be decrypted : "<<a<<endl;
+                ES<<"Encrypted string :- "<<encrypted<<endl;
+                ES.close();	
+				break;	
+			}
+			else if(choi==2)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of Vigenere cipher "<<endl;
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				vc.set_a(a);
+				string encrypted = txtptr->encrypt(a);
+                string decrypted = vc.decrypt(a);
+				cout<<"Decrypted Text="<<txtptr->decrypt(a)<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+				ES<<"String to be decrypted : "<<a<<endl;
+				ES<<"Decrypted string :- "<<decrypted<<endl;
+                ES.close();	
+				break;	
+			}
+			else if(choi==3)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of Vigenere cipher "<<endl;
+			    cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				vc.set_a(a);
+				string encrypted = txtptr->encrypt(a);
+                string decrypted = vc.decrypt(encrypted);
+                cout<<"Encrypted Text="<<encrypted<<endl;
+				cout<<"Decrypted Text="<<txtptr->decrypt(encrypted)<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+                ES<<"Encrypted string :- "<<encrypted<<endl;
+                ES<<"Decrypted string :- "<<decrypted<<endl;
+                ES.close();		
+				break;
+			}
+			else
+			{
+				cout<<"OOPS TRY AGAIN"<<endl;
+				goto C;
+				}
+				
+			}
+			
+		case 3:
+			{
+			txtptr=&xr;
+			B:
+			cout<<"***Welcome to XOR***"<<endl;	
+			cout<<"Press 1 for Encryption"<<endl;
+			cout<<"Press 2 for Decryption"<<endl;
+			cout<<"press 3 for both"<<endl;
+			cin>>choi;
+			if(choi==1)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of XOR"<<endl;
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				xr.set_a(a);
+				string encrypted = txtptr->encrypt(a);
+				cout<<"Encrypted Text="<<encrypted<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+				ES<<"String to be decrypted : "<<a<<endl;
+                ES<<"Encrypted string :- "<<encrypted<<endl;
+                ES.close();	
+					
+			}
+			else if(choi==2)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of XOR"<<endl;
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				xr.set_a(a);
+				string decrypted = txtptr->decrypt(a);
+				cout<<"Decrypted Text="<<decrypted<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+				ES<<"String to be decrypted : "<<a<<endl;
+				ES<<"Decrypted string :- "<<decrypted<<endl;
+                ES.close();		
+			}
+			else if(choi==3)
+			{
+				ofstream ES;
+				ES.open("ES.txt",ios::app); 
+				ES<<"Encryption system of XOR"<<endl;
+				cout<<"ENTER TEXT=";
+				cin.ignore();
+				getline(cin,a);
+				xr.set_a(a);
+				string encrypted = txtptr->encrypt(a);
+				cout<<"Encrypted Text="<<encrypted<<endl;
+				string decrypted = txtptr->decrypt(encrypted);
+				cout<<"Decrypted Text="<<decrypted<<endl;
+				ES<<"String you entered :- "<<a<<endl;
+                ES<<"Encrypted string :- "<<encrypted<<endl;
+                ES<<"Decrypted string :- "<<decrypted<<endl;
+                ES.close();	
+				break;
+			}
+			else
+			{
+				cout<<"OOPS TRY AGAIN"<<endl;
+				goto B;
+				}	
+			break;
+			}
+			case 4:
+				{
+					fstream ES;
+					ES.open("ES.txt",ios::in);  
+					string ch="";
+					cout<<"enter text you want encryption of"<<endl;
+					cin.ignore();
+					getline(cin,a);
+					txtptr= &vcc;
+					string v=txtptr->encrypt(a);
+					txtptr=&ccc;
+					string c=txtptr->encrypt(a);
+					txtptr=&xrr;
+					string x=txtptr->encrypt(a);
+					int count=1;
+					int vc=1;
+					int cc=1;
+					int xr=1;
+					
+while (ES >> ch)
+{
+    
+    
+		if(ch==a)
+	{
+	count=count*0;
+}
+		 if(ch==c)
+        {
+        cout<<"Encryption from Ceaser Cipher : "<<endl;	
+		cout<<ch<<endl;
+		cc=cc*0;
+	}
+
+    
+        
+		if(ch==v)
+        {
+        cout<<"Encryption from vigenere Cipher : "<<endl;	
+		cout<<ch<<endl;
+		vc=vc*0;
+	}
+		
+       
+		if(ch==x)
+        {
+        cout<<"Encryption from XOR : "<<endl;	
+		cout<<ch<<endl;
+		xr=xr*0;
+	}
+                   
+}
+if(count!=0)
+{
+	cout<<"The string You entered"<<endl;
+	cout<<"not found in files!"<<endl;
+}
+if(cc!=0)
+{
+	cout<<"The Encryption from ceaser cipher"<<endl;
+	cout<<"not found in files !"<<endl;
+}
+if(vc!=0)
+{
+	cout<<"The Encryption From Vigenere cipher"<<endl;
+	cout<<"not found in files !"<<endl;
+}
+if(xr!=0)
+{
+	cout<<"The Encryption from XOR"<<endl;
+	cout<<"not found in files!"<<endl;
+}
+
+
+	ES.close();
+	goto A;
+	break;	
+	
+}
+case 5:
+				{
+					fstream ES;
+					ES.open("ES.txt",ios::in);  
+					string ch="";
+					cout<<"enter text you want decryption of : "<<endl;
+					cin.ignore();
+					getline(cin,a);
+					txtptr= &vcc;
+					string v=txtptr->decrypt(a);
+					txtptr=&ccc;
+					string c=txtptr->decrypt(a);
+					txtptr=&xrr;
+					string x=txtptr->decrypt(a);
+					int count=1;
+					int vc=1;
+					int cc=1;
+					int xr=1;
+					
+while (ES >> ch)
+{
+    
+    
+		if(ch==a)
+	{
+	count=count*0;
+}
+
+		
+		
+		 if(ch==c)
+        {
+        cout<<"decryption from Ceaser Cipher : "<<endl;	
+		cout<<ch<<endl;
+		cc=cc*0;
+	}
+
+    
+        
+		if(ch==v)
+        {
+        cout<<"decryption from vigenere Cipher : "<<endl;	
+		cout<<ch<<endl;
+		vc=vc*0;
+	}
+		
+       
+		if(ch==x)
+        {
+        cout<<"decryption from XOR : "<<endl;	
+		cout<<ch<<endl;
+		xr=xr*0;
+	}
+                   
+}
+if(count!=0)
+{
+	cout<<"The string You entered : "<<a<<endl;
+	cout<<"not found !"<<endl;
+}
+if(cc!=0)
+{
+	cout<<"The decryption from ceaser cipher"<<endl;
+	cout<<"not found in files!"<<endl;
+}
+if(vc!=0)
+{
+	cout<<"The decryption From Vigenere cipher"<<endl;
+	cout<<"not found in files!"<<endl;
+}
+if(xr!=0)
+{
+	cout<<"The decryption from XOR"<<endl;
+	cout<<"not found in files!"<<endl;
+}
+
+
+	ES.close();
+	goto A;
+	break;	
+	
+}
+		default:
+			
+		{
+			cout<<"INVALID INPUT \n TRY AGAIN";
+			goto A;
+			break;
+		}			
+}
+	int c;
+	cout<<"want another encryption system?"<<endl;
+	cout<<"if \'YES\' press 1"<<endl;
+	cin>>c;
+	if(c==1)
+	{
+		system("CLS");
+		goto A;
+	}
+	else
+	{
+		system("CLS");
+		cout<<"*******Thankyou for using our system********"<<endl;
+	}
+	
+	return 0;
+}
